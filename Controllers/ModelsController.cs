@@ -23,10 +23,12 @@ namespace WebApi.Controllers
             this.logic = logic;
         }
 
-        [Route("status")]
-        public async Task<IEnumerable<string>> Get(int id)
+        [Route("status/{status?}")]
+        public async Task<IEnumerable<string>> Get(int status)
         {
-            var leads = await logic.GetLeadsByStatus();
+            // 17769208
+
+            var leads = await logic.GetLeadsByStatus(status);
 
             return leads.ToList().Where(i => i.IsDeleted != true).Select(i => i.Name);
         }
