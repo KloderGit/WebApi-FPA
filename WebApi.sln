@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryAmoCRM", "..\Library
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "..\Application\Domain\Domain.csproj", "{158FFA4E-B4B6-4773-BFF7-1B021DD4BB5C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryNeoClient", "..\LibraryNeoClient\LibraryNeoClient.csproj", "{2713E9B8-3F0E-4DF6-9ABC-C8BC342121DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{158FFA4E-B4B6-4773-BFF7-1B021DD4BB5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{158FFA4E-B4B6-4773-BFF7-1B021DD4BB5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{158FFA4E-B4B6-4773-BFF7-1B021DD4BB5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2713E9B8-3F0E-4DF6-9ABC-C8BC342121DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2713E9B8-3F0E-4DF6-9ABC-C8BC342121DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2713E9B8-3F0E-4DF6-9ABC-C8BC342121DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2713E9B8-3F0E-4DF6-9ABC-C8BC342121DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

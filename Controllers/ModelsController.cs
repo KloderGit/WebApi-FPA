@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LibraryAmoCRM.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using WebApiBusinessLogic;
 
@@ -22,6 +23,13 @@ namespace WebApi.Controllers
             this.logger = logger;
             this.logic = logic;
         }
+
+        [Route("programs")]
+        public string GetPrograms()
+        {
+            return logic.GetProgramsListForAmo();
+        }
+
 
         [Route("status/{status?}")]
         public async Task<IEnumerable<string>> Get(int status)
