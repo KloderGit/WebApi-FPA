@@ -42,11 +42,6 @@ namespace WebApiFPA.Controllers
 
             logger.Information("Входящее событие, {@Element}", value);
 
-            //var api = new MandrillApi("3GWqeBmS1HGZy9Y8FOzKJQ");
-            //var message = new MandrillMessage("info@fitness-pro.ru", "kloder@fitness-pro.ru",
-            //                "hello mandrill!", "...how are you?");
-            //var result = await api.Messages.SendAsync(message);
-
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
