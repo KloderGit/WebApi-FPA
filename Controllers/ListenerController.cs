@@ -1,12 +1,16 @@
-﻿using Mapster;
+﻿using Common.Logging;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Serilog;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using WebApi.Common.Models;
 using WebApi.Utils;
 using WebApiBusinessLogic;
+using WebApiBusinessLogic.Infrastructure;
 using WebApiBusinessLogic.Models.Crm;
 
 namespace WebApiFPA.Controllers
@@ -16,13 +20,15 @@ namespace WebApiFPA.Controllers
     {
         BusinessLogic logic;
         ILogger logger;
+        TypeAdapterConfig mapper;
 
-        public ListenerController(ILogger logger, BusinessLogic logic)
+        public ListenerController(ILogger logger, BusinessLogic logic, TypeAdapterConfig mapper)
         {
             new RegisterMapsterConfig();
 
             this.logger = logger;
             this.logic = logic;
+            this.mapper = mapper;
         }
 
         // POST api/Listener

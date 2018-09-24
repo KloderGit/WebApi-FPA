@@ -27,33 +27,6 @@ namespace WebApi.Common
             char[] charsToTrim = { '\n', '\r', ' ' };
 
 
-
-
-            //if (!bindingContext.ModelMetadata.IsComplexType)
-            //{
-            //    try
-            //    {
-            //        var propertyName = bindingContext.ModelMetadata.PropertyName;
-
-            //        var property = bindingContext.ModelMetadata.ContainerType.GetProperty(propertyName);
-
-            //        if (property != null)
-            //        {
-            //            var attribute = property.GetCustomAttributes(typeof(string), false).FirstOrDefault();
-            //        }
-            //    }
-            //    catch (Exception exception)
-            //    {
-            //        var message = exception.Message;
-
-            //        return null;
-            //    }
-            //}
-
-
-
-
-
             ResultObject.Entity = names[0].Trim(charsToTrim);
 
             string @event = names[1].Trim(charsToTrim);
@@ -79,27 +52,33 @@ namespace WebApi.Common
 
             // Текущие виды параметров
 
-            var hasOldstatus = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "old_status").FirstValue;
-
-            if (!String.IsNullOrEmpty(hasOldstatus))
+            if (@event == "status")
             {
-                var curentValue = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "old_status").FirstValue;
-                if (curentValue != hasOldstatus)
-                {
-                    Events.Add(new ChangedParam { Event = "ChangeStatus", OldValue = hasOldstatus });
-                }                
-            }
+                var hasOldstatus = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "old_status_id").FirstValue;
 
-            var hasResponsibleUser = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "old_responsible_user_id").FirstValue;
-
-            if (!String.IsNullOrEmpty(hasResponsibleUser))
-            {
-                var curentValue = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "old_responsible_user_id").FirstValue;
-                if (curentValue != hasResponsibleUser)
+                if (!String.IsNullOrEmpty(hasOldstatus))
                 {
-                    Events.Add(new ChangedParam { Event = "ChangeResponsibleUser", OldValue = hasResponsibleUser });
+                    var curentValue = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "status_id").FirstValue;
+                    if (curentValue != hasOldstatus)
+                    {
+                        Events.Add(new ChangedParam { Event = @event, OldValue = hasOldstatus, CurrentValue = curentValue });
+                    }
                 }
             }
+
+            if (@event == "responsible")
+            {
+                var hasResponsibleUser = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "old_responsible_user_id").FirstValue;
+
+                if (!String.IsNullOrEmpty(hasResponsibleUser))
+                {
+                    var curentValue = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "responsible_user_id").FirstValue;
+                    if (curentValue != hasResponsibleUser)
+                    {
+                        Events.Add(new ChangedParam { Event = @event, OldValue = hasResponsibleUser, CurrentValue = curentValue });
+                    }
+                }
+            }            
 
             if (Events.Count < 1)
             {

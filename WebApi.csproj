@@ -7,12 +7,13 @@
 
   <ItemGroup>
     <Folder Include="Common\Models\AmoCrm\Listener\" />
+    <Folder Include="Infrastructure\Mappings\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Mandrill.net" Version="5.0.0" />
-    <PackageReference Include="Mapster" Version="3.1.8" />
+    <PackageReference Include="Mapster" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
     <PackageReference Include="Serilog" Version="2.7.1" />

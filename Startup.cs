@@ -1,4 +1,5 @@
 ﻿using Library1C;
+using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,8 @@ namespace WebApiFPA
                     .WriteTo.Seq("http://logs.fitness-pro.ru:5341")
                     .CreateLogger();
             });
+
+            services.AddScoped(mapper => { return new TypeAdapterConfig(); });
 
             services.AddTransient<BusinessLogic>();
         }
