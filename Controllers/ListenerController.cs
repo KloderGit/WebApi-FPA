@@ -42,7 +42,6 @@ namespace WebApiFPA.Controllers
         //                Dictionary<string,string>>>>
         //    value)
         {
-            //var ttt = new StreamReader(Request.Body).ReadToEndAsync().Result;
 
             logic.GetEvent(value.Adapt<CrmEvent>());
 

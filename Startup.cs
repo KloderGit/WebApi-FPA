@@ -32,7 +32,7 @@ namespace WebApiFPA
 
             services.AddScoped(mapper => { return new TypeAdapterConfig(); });
 
-            services.AddTransient<BusinessLogic>();
+            services.AddScoped<BusinessLogic>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
