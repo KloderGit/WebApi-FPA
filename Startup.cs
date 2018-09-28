@@ -1,4 +1,5 @@
 ﻿using Library1C;
+using LibraryAmoCRM;
 using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +32,29 @@ namespace WebApiFPA
             });
 
             services.AddScoped(mapper => { return new TypeAdapterConfig(); });
+
+            services.AddSingleton(amo => {
+                return new DataManager(
+                    Configuration.GetSection("providers:0:AmoCRM:connection:account:name").Value,
+                    Configuration.GetSection("providers:0:AmoCRM:connection:account:email").Value,
+                    Configuration.GetSection("providers:0:AmoCRM:connection:account:hash").Value
+                );
+            });
+
+            services.AddSingleton(service1C => {
+                return new UnitOfWork(
+                    Configuration.GetSection("providers:1:1C:connection:account:user").Value,
+                    Configuration.GetSection("providers:1:1C:connection:account:pass").Value
+                );
+            });
+
+            //services.AddSingleton(neo => {
+            //    return new ServiceLibraryNeoClient.Implements.DataManager(
+            //        new System.Uri( Configuration.GetSection("providers:2:Neo:connection:account:uri").Value ),
+            //            Configuration.GetSection("providers:2:Neo:connection:account:user").Value,
+            //            Configuration.GetSection("providers:2:Neo:connection:account:pass").Value
+            //        );
+            //});
 
             services.AddScoped<BusinessLogic>();
         }
