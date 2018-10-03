@@ -10,6 +10,7 @@ using Serilog;
 using WebApi.Models;
 using WebApi.Utils;
 using WebApiBusinessLogic;
+using WebApiBusinessLogic.Models.Site;
 
 namespace WebApi.Controllers
 {
@@ -36,6 +37,17 @@ namespace WebApi.Controllers
         {
             logger.Information( "Модель формы: {@Model}", value );
 
+            var vm = value.Adapt<SignUpForEvent>();
+
+            //var result = logic.LookForAmoUser(value.ContactPhones, value.ContactEmails.FirstOrDefault());
+            try
+            {
+                var resut = logic.CreateLeadFormSite(vm);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }
