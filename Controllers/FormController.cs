@@ -33,21 +33,28 @@ namespace WebApi.Controllers
         // POST: api/Form/addlead
         [HttpPost]
         [Route("addlead")]
-        public void Post([FromBody]IncomingLeadViewModel value)
+        public async Task<IActionResult> Post([FromBody]IncomingLeadViewModel value)
         {
             logger.Information( "Модель формы: {@Model}", value );
 
             var vm = value.Adapt<SignUpForEvent>();
 
-            //var result = logic.LookForAmoUser(value.ContactPhones, value.ContactEmails.FirstOrDefault());
+            int result = 0;
+
             try
             {
-                var resut = logic.CreateLeadFormSite(vm);
+                result = await logic.CreateLeadFormSite(vm);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest("Ошибка в предоставленных данных");
             }
             catch (Exception ex)
             {
-
+                return BadRequest(ex.Message);
             }
+
+            return Ok(result);
         }
     }
 }
