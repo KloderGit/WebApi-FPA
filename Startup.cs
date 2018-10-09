@@ -1,4 +1,6 @@
-﻿using Library1C;
+﻿using Common.Interfaces;
+using Common.Logging;
+using Library1C;
 using LibraryAmoCRM;
 using Mapster;
 using Microsoft.AspNetCore.Builder;
@@ -25,10 +27,8 @@ namespace WebApiFPA
         {
             services.AddMvc();
 
-            services.AddScoped<ILogger>(provider => {
-                return new LoggerConfiguration()
-                    .WriteTo.Seq("http://logs.fitness-pro.ru:5341")
-                    .CreateLogger();
+            services.AddScoped<ILoggerService>(provider => {
+                return new LoggerService();
             });
 
             services.AddScoped(mapper => { return new TypeAdapterConfig(); });

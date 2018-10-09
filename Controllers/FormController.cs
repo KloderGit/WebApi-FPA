@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +20,10 @@ namespace WebApi.Controllers
     public class FormController : Controller
     {
         BusinessLogic logic;
-        ILogger logger;
+        ILoggerService logger;
         TypeAdapterConfig mapper;
 
-        public FormController(ILogger logger, BusinessLogic logic, TypeAdapterConfig mapper)
+        public FormController(ILoggerService logger, BusinessLogic logic, TypeAdapterConfig mapper)
         {
             this.logger = logger;
             this.logic = logic;

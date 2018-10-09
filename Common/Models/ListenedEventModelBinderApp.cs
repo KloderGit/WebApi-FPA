@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Common.Models;
-using WebApi.Common.Models.AmoCrm.Listener;
 
 namespace WebApi.Common
 {

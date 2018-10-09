@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.Interfaces;
 using LibraryAmoCRM.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,9 @@ namespace WebApi.Controllers
     public class ModelsController : Controller
     {
         BusinessLogic logic;
-        ILogger logger;
+        ILoggerService logger;
 
-        public ModelsController(ILogger logger, BusinessLogic logic)
+        public ModelsController(ILoggerService logger, BusinessLogic logic)
         {
             this.logger = logger;
             this.logic = logic;

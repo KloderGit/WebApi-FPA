@@ -1,4 +1,5 @@
-﻿using Common.Logging;
+﻿using Common.Interfaces;
+using Common.Logging;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -19,10 +20,10 @@ namespace WebApiFPA.Controllers
     public class ListenerController : Controller
     {
         BusinessLogic logic;
-        ILogger logger;
+        ILoggerService logger;
         TypeAdapterConfig mapper;
 
-        public ListenerController(ILogger logger, BusinessLogic logic, TypeAdapterConfig mapper)
+        public ListenerController(ILoggerService logger, BusinessLogic logic, TypeAdapterConfig mapper)
         {
             new RegisterMapsterConfig();
 
