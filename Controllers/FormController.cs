@@ -40,6 +40,8 @@ namespace WebApi.Controllers
 
             var vm = value.Adapt<SignUpForEvent>();
 
+            vm.RequestUrl = Request.Path.Value;
+
             int result = 0;
 
             try

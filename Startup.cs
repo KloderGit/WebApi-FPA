@@ -22,18 +22,15 @@ namespace WebApiFPA
             Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
 
-            services.AddScoped<ILoggerService>(provider => {
-                return new LoggerService();
-            });
+            services.AddScoped<ILoggerService, LoggerService>();
 
             services.AddScoped(mapper => { return new TypeAdapterConfig(); });
 
-            services.AddSingleton(amo => {
+            services.AddScoped(amo => {
                 return new DataManager(
                     Configuration.GetSection("providers:0:AmoCRM:connection:account:name").Value,
                     Configuration.GetSection("providers:0:AmoCRM:connection:account:email").Value,
@@ -41,7 +38,7 @@ namespace WebApiFPA
                 );
             });
 
-            services.AddSingleton(service1C => {
+            services.AddScoped(service1C => {
                 return new UnitOfWork(
                     Configuration.GetSection("providers:1:1C:connection:account:user").Value,
                     Configuration.GetSection("providers:1:1C:connection:account:pass").Value
