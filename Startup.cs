@@ -45,13 +45,14 @@ namespace WebApiFPA
                 );
             });
 
-            //services.AddSingleton(neo => {
-            //    return new ServiceLibraryNeoClient.Implements.DataManager(
-            //        new System.Uri( Configuration.GetSection("providers:2:Neo:connection:account:uri").Value ),
-            //            Configuration.GetSection("providers:2:Neo:connection:account:user").Value,
-            //            Configuration.GetSection("providers:2:Neo:connection:account:pass").Value
-            //        );
-            //});
+            services.AddSingleton( neo =>
+            {
+                return new ServiceLibraryNeoClient.Implements.DataManager(
+                    new System.Uri( Configuration.GetSection( "providers:2:Neo:connection:account:uri" ).Value ),
+                        Configuration.GetSection( "providers:2:Neo:connection:account:user" ).Value,
+                        Configuration.GetSection( "providers:2:Neo:connection:account:pass" ).Value
+                    );
+            } );
 
             services.AddScoped<BusinessLogic>();
         }
