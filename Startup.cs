@@ -2,12 +2,13 @@
 using Common.Logging;
 using Library1C;
 using LibraryAmoCRM;
+using LibraryAmoCRM.Interfaces;
 using Mapster;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
+using System.Net.Http;
 using WebApiBusinessLogic;
 
 namespace WebApiFPA
@@ -28,22 +29,35 @@ namespace WebApiFPA
 
             services.AddScoped<ILoggerService, LoggerService>();
 
-            services.AddScoped(mapper => { return new TypeAdapterConfig(); });
-
-            services.AddScoped(amo => {
-                return new DataManager(
-                    Configuration.GetSection("providers:0:AmoCRM:connection:account:name").Value,
-                    Configuration.GetSection("providers:0:AmoCRM:connection:account:email").Value,
-                    Configuration.GetSection("providers:0:AmoCRM:connection:account:hash").Value
+            services.AddSingleton<Connection>( con =>
+            {
+                return new Connection(
+                    Configuration.GetSection( "providers:0:AmoCRM:connection:account:name" ).Value,
+                    Configuration.GetSection( "providers:0:AmoCRM:connection:account:email" ).Value,
+                    Configuration.GetSection( "providers:0:AmoCRM:connection:account:hash" ).Value
                 );
-            });
+            } );
 
-            services.AddScoped(service1C => {
+            services.AddScoped( mapper => { return new TypeAdapterConfig(); } );
+
+            services.AddScoped<IDataManager, CrmManager>();
+
+            //services.AddScoped( amo =>
+            //{
+            //    return new DataManager(
+            //        Configuration.GetSection( "providers:0:AmoCRM:connection:account:name" ).Value,
+            //        Configuration.GetSection( "providers:0:AmoCRM:connection:account:email" ).Value,
+            //         Configuration.GetSection( "providers:0:AmoCRM:connection:account:hash" ).Value
+            //    );
+            //} );
+
+            services.AddScoped( service1C =>
+            {
                 return new UnitOfWork(
-                    Configuration.GetSection("providers:1:1C:connection:account:user").Value,
-                    Configuration.GetSection("providers:1:1C:connection:account:pass").Value
+                    Configuration.GetSection( "providers:1:1C:connection:account:user" ).Value,
+                    Configuration.GetSection( "providers:1:1C:connection:account:pass" ).Value
                 );
-            });
+            } );
 
             services.AddSingleton( neo =>
             {
@@ -58,17 +72,19 @@ namespace WebApiFPA
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Connection connection)
         {
+            connection.Auth(null);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvc( routes =>
+             {
+                 routes.MapRoute( "default", "{controller=Home}/{action=Index}/{id?}" );
+             } );
         }
     }
 }
