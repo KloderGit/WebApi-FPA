@@ -6,6 +6,8 @@ using Common.Interfaces;
 using LibraryAmoCRM.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using WebApiBusinessLogic;
@@ -18,17 +20,27 @@ namespace WebApi.Controllers
     {
         BusinessLogic logic;
         ILoggerService logger;
+        IMemoryCache cache;
 
-        public ModelsController(ILoggerService logger, BusinessLogic logic)
+        public ModelsController(ILoggerService logger, BusinessLogic logic, IMemoryCache memoryCache)
         {
             this.logger = logger;
             this.logic = logic;
+            this.cache = memoryCache;
         }
 
+        [ResponseCache( Location = ResponseCacheLocation.Client, Duration = 3600 )]
         [Route("programs")]
         public string GetPrograms()
         {
-            return logic.GetProgramsListForAmo();
+            var result = cache.GetOrCreate( "Programs", entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours( 20 );
+
+                return logic.GetProgramsListForAmo();
+            } );
+
+            return result;
         }
 
 

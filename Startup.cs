@@ -27,6 +27,8 @@ namespace WebApiFPA
         {
             services.AddMvc();
 
+            services.AddMemoryCache();
+
             services.AddScoped<ILoggerService, LoggerService>();
 
             services.AddSingleton<Connection>( con =>
