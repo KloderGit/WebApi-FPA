@@ -8,6 +8,7 @@
   <ItemGroup>
     <Folder Include="Common\Models\AmoCrm\Listener\" />
     <Folder Include="Infrastructure\Mappings\" />
+    <Folder Include="Models\CrmEvents\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

@@ -40,4 +40,21 @@ namespace WebApi.Models
         [JsonProperty(PropertyName = "GUID_EVENT")]
         public string LeadGuid { get; set; }
     }
+
+    public class LeadFormViewModel
+    {
+        public IEnumerable<FormField> Fields { get; set; }
+    }
+
+    public class FormField
+    {
+        public FormField()
+        {
+
+        }
+        public string name { get; set; }
+
+
+        public string value { get; set; }
+    }
 }

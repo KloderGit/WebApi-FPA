@@ -63,6 +63,18 @@ namespace WebApiFPA.Controllers
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
+        [HttpPost]
+        [Route( "raw2" )]
+        public HttpResponseMessage Post(dynamic model)
+        {
+
+            var ttt = new StreamReader( Request.Body ).ReadToEndAsync().Result;
+
+            logger.Information( "Данные от AMO, {Data}", ttt.ToString() );
+
+            return new HttpResponseMessage( HttpStatusCode.OK );
+        }
+
     }
 
 }
