@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using WebApiBusinessLogic;
+using WebApiBusinessLogic.Models.Crm;
 
 namespace WebApi.Controllers
 {
@@ -31,7 +32,7 @@ namespace WebApi.Controllers
 
         [ResponseCache( Location = ResponseCacheLocation.Client, Duration = 3600 )]
         [Route("programs")]
-        public string GetPrograms()
+        public IEnumerable<ProgramList> GetPrograms()
         {
             var result = cache.GetOrCreate( "Programs", entry =>
             {

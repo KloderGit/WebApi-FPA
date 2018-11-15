@@ -27,6 +27,8 @@ namespace WebApiFPA
         {
             services.AddMvc();
 
+            services.AddCors();
+
             services.AddMemoryCache();
 
             services.AddScoped<ILoggerService, LoggerService>();
@@ -77,6 +79,8 @@ namespace WebApiFPA
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, Connection connection)
         {
             connection.Auth(null);
+
+            app.UseCors( builder => builder.AllowAnyOrigin() );
 
             if (env.IsDevelopment())
             {
