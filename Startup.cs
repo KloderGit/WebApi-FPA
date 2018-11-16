@@ -80,7 +80,9 @@ namespace WebApiFPA
         {
             connection.Auth(null);
 
-            app.UseCors( builder => builder.AllowAnyOrigin() );
+            app.UseCors( builder => builder.AllowAnyOrigin()
+                                         .AllowAnyHeader()
+                                         .AllowAnyMethod() );
 
             if (env.IsDevelopment())
             {

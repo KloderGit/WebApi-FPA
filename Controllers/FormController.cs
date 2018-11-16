@@ -34,12 +34,12 @@ namespace WebApi.Controllers
         // POST: api/Form/addlead
         [HttpPost]
         [Route("addlead")]
-        //public async Task<IActionResult> Post([FromBody]IncomingLeadViewModel value)
-        public async Task<IActionResult> Post()
+        public async Task<IActionResult> Post([FromBody]IncomingLeadViewModel value)
+        //public async Task<IActionResult> Post()
         {
-            var ttt = new StreamReader( Request.Body ).ReadToEndAsync().Result;
+            //var ttt = new StreamReader( Request.Body ).ReadToEndAsync().Result;
 
-            logger.Information( "Модель формы: {@Model}", ttt.ToString() );
+            logger.Information( "Модель формы: {@Model}", value );
 
             //var vm = value.Adapt<SignUpForEvent>();
 
