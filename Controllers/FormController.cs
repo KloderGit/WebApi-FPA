@@ -30,15 +30,24 @@ namespace WebApi.Controllers
             this.mapper = mapper;
         }
 
-
+        
         // POST: api/Form/addlead
-        [HttpPost]
+        [ HttpPost]
         [Route("addlead")]
-        public async Task<IActionResult> Post([FromBody]IncomingLeadViewModel value)
+        public async Task<IActionResult> Post([FromBody]IEnumerable<FormField> value)
         {
             logger.Information( "Модель формы: {@Model}", value );
 
             var vm = value.Adapt<SignUpForEvent>();
+
+            var model = new SignUpForEvent();
+
+            model.ContactCity = value.FirstOrDefault( x => x.name == "DATA[CITY]" )?.value;
+            model.ContactEmails = value.FirstOrDefault( x => x.name == "DATA[EMAIL][]" )?.value;
+            model.ContactName = value.FirstOrDefault( x => x.name == "DATA[NAME]" )?.value;
+            model.ContactPhones = value.FirstOrDefault( x => x.name == "DATA[PHONE][]" )?.value;
+            model.EventType = value.FirstOrDefault( x => x.name == "TYPE" )?.value;
+            //model.LeadDate = value.FirstOrDefault( x => x.name == "DATA[DATE]" )?.value.toDatetime();
 
             vm.RequestUrl = Request.Path.Value;
 
