@@ -7,14 +7,12 @@
 
   <ItemGroup>
     <Folder Include="Common\Models\AmoCrm\Listener\" />
-    <Folder Include="Infrastructure\Mappings\" />
-    <Folder Include="Models\CrmEvents\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mandrill.net" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\BusinessLogic\WebApiBusinessLogic.csproj" />
-    <ProjectReference Include="..\Application\Common\Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
