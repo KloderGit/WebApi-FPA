@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using Serilog;
 using WebApiBusinessLogic;
-using WebApiBusinessLogic.Models.Crm;
 
 namespace WebApi.Controllers
 {
@@ -30,15 +30,28 @@ namespace WebApi.Controllers
             this.cache = memoryCache;
         }
 
-        [ResponseCache( Location = ResponseCacheLocation.Client, Duration = 3600 )]
+        [ResponseCache( Location = ResponseCacheLocation.Client, Duration = 30 )]
         [Route("programs")]
-        public IEnumerable<ProgramList> GetPrograms()
+        public JArray GetPrograms()
         {
             var result = cache.GetOrCreate( "Programs", entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromHours( 20 );
 
-                return logic.GetProgramsListForAmo();
+                var settings = new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+
+                var vm = new JArray();
+
+                foreach (var cycle in logic.GetProgramsListForAmo())
+                {
+                    var cycleJson = JObject.FromObject( cycle );
+                    vm.Add( cycleJson );
+                }
+
+                return vm;
             } );
 
             return result;
