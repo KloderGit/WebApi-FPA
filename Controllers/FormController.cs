@@ -1,41 +1,42 @@
-﻿using Common.Interfaces;
-using LibraryAmoCRM.Interfaces;
-using Mapster;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
+using Common.Interfaces;
+using LibraryAmoCRM.Interfaces;
+using Mapster;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using WebApi.Controllers.SignUp.Models;
-using WebApi.Infrastructure.Binders;
 using WebApi.Infrastructure.Mappings;
 using WebApiBusinessLogic.Logics.SignUp;
 using WebApiBusinessLogic.Logics.SignUp.Model;
 
-namespace WebApi.Controllers.SignUp
+namespace WebApi.Controllers
 {
     [Produces("application/json")]
-    [Route("SignUp")]
-    public class SignUpController : Controller
+    [Route("api/Form")]
+    public class FormController : Controller
     {
         SignUpLogic logic;
         TypeAdapterConfig mapper;
         ILoggerService logger;
 
-        public SignUpController(ILoggerService logger, TypeAdapterConfig mapper, IDataManager crm)
+        public FormController(ILoggerService logger, TypeAdapterConfig mapper, IDataManager crm)
         {
             this.mapper = mapper;
-                new Map_FormToModel( mapper );
+            new Map_FormToModel( mapper );
             this.logic = new SignUpLogic( logger, mapper, crm );
             this.logger = logger;
         }
 
         [HttpPost]
-        [Route( "LeadFromSiteForm" )]
+        [Route( "addlead" )]
         public async Task<IActionResult> GivenFromSiteForm([FromBody]IEnumerable<SiteFormField> fields)
         {
             // Convert to Model
-            var model = fields.Adapt<SiteFormModel>(mapper);
+            var model = fields.Adapt<SiteFormModel>( mapper );
             logger.Information( GetType().Assembly.GetName().Name + " | Получена модель с форм сайта {@Model}", model );
 
             // Check Model

@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Controllers.SignUp.Models;
@@ -57,7 +58,7 @@ namespace WebApi.Infrastructure.Mappings
                 .Map(
                     dest => dest.Date,
                     src => src.FirstOrDefault( x => x.Name == "DATA[DATE]" ) != null
-                        ? DateTime.Parse( src.FirstOrDefault( x => x.Name == "DATA[DATE]" ).Value)
+                        ? DateTime.Parse( src.FirstOrDefault( x => x.Name == "DATA[DATE]").Value, new CultureInfo( "ru-RU" ) ) 
                         : default(DateTime)
                 )
                 .Map(
@@ -99,7 +100,7 @@ namespace WebApi.Infrastructure.Mappings
 
                 .Map(
                     dest => dest.Price,
-                    src => src.FirstOrDefault( x => x.Name == "DATA[PRICE]" ) != null
+                    src => src.FirstOrDefault( x => x.Name == "DATA[PRICE]" ) != null & !String.IsNullOrEmpty(src.FirstOrDefault( x => x.Name == "DATA[PRICE]" ).Value)
                         ? int.Parse( src.FirstOrDefault( x => x.Name == "DATA[PRICE]" ).Value )
                         : default( int )
                 );
