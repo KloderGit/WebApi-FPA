@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using WebApi.Controllers.SignUp.Models;
 using WebApi.Infrastructure.Binders;
-using WebApi.Infrastructure.Mappings;
+using WebApi.Infrastructure.LocalMaps;
 using WebApiBusinessLogic.Logics.SignUp;
 using WebApiBusinessLogic.Logics.SignUp.Model;
 
@@ -34,10 +34,20 @@ namespace WebApi.Controllers.SignUp
         [Route( "LeadFromSiteForm" )]
         public async Task<IActionResult> GivenFromSiteForm([FromBody]IEnumerable<SiteFormField> fields)
         {
-            // Convert to Model
-            var model = fields.Adapt<SiteFormModel>(mapper);
-            logger.Information( GetType().Assembly.GetName().Name + " | Получена модель с форм сайта {@Model}", model );
+            SiteFormModel model = null;
 
+            // Convert to Model
+            try
+            {
+                model = fields.Adapt<SiteFormModel>( mapper );
+
+                logger.Information( GetType().Assembly.GetName().Name + " | Получена модель с форм сайта {@Model}", model );
+            }
+            catch (Exception ex)
+            {
+                logger.Error( ex, GetType().Assembly.GetName().Name + " | Ошибка маппинга модели данных формы с сайта {@Model}", model );
+            }
+            
             // Check Model
             var validateResults = new List<ValidationResult>();
             var context = new ValidationContext( model );
@@ -51,20 +61,30 @@ namespace WebApi.Controllers.SignUp
                 return BadRequest( ModelState );
             }
 
-            var dto = model.Adapt<SignUpDTO>();
+
+            SignUpDTO dto = null;
+
+            try
+            {
+                dto = model.Adapt<SignUpDTO>();
+            }
+            catch (Exception ex)
+            {
+                logger.Error( ex, GetType().Assembly.GetName().Name + " | Ошибка маппинга модели данных формы в модель DTO {@Model}", model );
+            }
 
             try
             {
                 var result = await logic.AddLead( dto );
+                logger.Information( GetType().Assembly.GetName().Name + " | Создана сделка в AmoCRM - {@Id}", result );
                 return Created( "", result );
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError( "errors", "Internal error" );
+                ModelState.AddModelError( "errors", ex.Message );
                 return BadRequest( ModelState );
             }
-
-
+            
         }
     }
 }

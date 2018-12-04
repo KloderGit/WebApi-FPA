@@ -6,13 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Controllers.SignUp.Models;
 
-namespace WebApi.Infrastructure.Mappings
+namespace WebApi.Infrastructure.LocalMaps
 {
     public class Map_FormToModel
     {
         public Map_FormToModel(TypeAdapterConfig config)
         {
             config.NewConfig<IEnumerable<SiteFormField>, SiteFormModel>()
+                .IgnoreNullValues( true )
                 .Map(
                     dest => dest.Contact,
                     src => src
@@ -23,22 +24,23 @@ namespace WebApi.Infrastructure.Mappings
                 );
 
             config.NewConfig<IEnumerable<SiteFormField>, ContactModel>()
+                .IgnoreNullValues( true )
                     .Map( 
                         dest => dest.Name, 
-                        src => src.FirstOrDefault(x=>x.Name == "DATA[NAME]") != null 
-                            ? src.FirstOrDefault( x => x.Name == "DATA[NAME]" ).Value 
+                        src => src.FirstOrDefault( x => x.Name.Trim() == "DATA[NAME]" ) != null
+                            ? src.FirstOrDefault( x => x.Name.Trim() == "DATA[NAME]" ).Value
                             : null
                     )
                     .Map(
                         dest => dest.Phone,
-                        src => src.FirstOrDefault( x => x.Name == "DATA[PHONE][] " ) != null 
-                            ? src.FirstOrDefault( x => x.Name == "DATA[PHONE][] " ).Value 
+                        src => src.FirstOrDefault( x => x.Name.Trim() == "DATA[PHONE][]" ) != null 
+                            ? src.FirstOrDefault( x => x.Name.Trim() == "DATA[PHONE][]" ).Value 
                             : null
                     )
                     .Map(
                         dest => dest.Email,
-                        src => src.FirstOrDefault( x => x.Name == "DATA[EMAIL][]" ) != null 
-                            ? src.FirstOrDefault( x => x.Name == "DATA[EMAIL][]" ).Value 
+                        src => src.FirstOrDefault( x => x.Name.Trim() == "DATA[EMAIL][]" ) != null 
+                            ? src.FirstOrDefault( x => x.Name.Trim() == "DATA[EMAIL][]" ).Value 
                             : null
                     )
                     .Map(
@@ -49,6 +51,7 @@ namespace WebApi.Infrastructure.Mappings
                     );
 
             config.NewConfig<IEnumerable<SiteFormField>, LeadModel>()
+                .IgnoreNullValues( true )
                 .Map(
                     dest => dest.Name,
                     src => src.FirstOrDefault( x => x.Name == "DATA[EDU_NAME]" ) != null
@@ -100,7 +103,7 @@ namespace WebApi.Infrastructure.Mappings
 
                 .Map(
                     dest => dest.Price,
-                    src => src.FirstOrDefault( x => x.Name == "DATA[PRICE]" ) != null & !String.IsNullOrEmpty(src.FirstOrDefault( x => x.Name == "DATA[PRICE]" ).Value)
+                    src => src.FirstOrDefault( x => x.Name == "DATA[PRICE]" ) != null && !String.IsNullOrEmpty(src.FirstOrDefault( x => x.Name == "DATA[PRICE]" ).Value)
                         ? int.Parse( src.FirstOrDefault( x => x.Name == "DATA[PRICE]" ).Value )
                         : default( int )
                 );
