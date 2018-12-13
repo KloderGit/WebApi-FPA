@@ -22,12 +22,16 @@ namespace WebApi.Controllers.SignUp
         TypeAdapterConfig mapper;
         ILoggerService logger;
 
+        string AssemblyName;
+
         public SignUpController(ILoggerService logger, TypeAdapterConfig mapper, IDataManager crm)
         {
             this.mapper = mapper;
                 new Map_FormToModel( mapper );
             this.logic = new SignUpLogic( logger, mapper, crm );
             this.logger = logger;
+
+            this.AssemblyName = GetType().Assembly.GetName().Name;
         }
 
         [HttpPost]
@@ -41,11 +45,11 @@ namespace WebApi.Controllers.SignUp
             {
                 model = fields.Adapt<SiteFormModel>( mapper );
 
-                logger.Information( GetType().Assembly.GetName().Name + " | Получена модель с форм сайта {@Model}", model );
+                logger.Information(AssemblyName + " | Получена модель с форм сайта {@Model}", model);
             }
             catch (Exception ex)
             {
-                logger.Error( ex, GetType().Assembly.GetName().Name + " | Ошибка маппинга модели данных формы с сайта {@Model}", model );
+                logger.Error( ex, AssemblyName + " | Ошибка маппинга модели данных формы с сайта {@Model}", model );
             }
             
             // Check Model
@@ -70,13 +74,12 @@ namespace WebApi.Controllers.SignUp
             }
             catch (Exception ex)
             {
-                logger.Error( ex, GetType().Assembly.GetName().Name + " | Ошибка маппинга модели данных формы в модель DTO {@Model}", model );
+                logger.Error( ex, AssemblyName + " | Ошибка маппинга модели данных формы в модель DTO {@Model}", model );
             }
 
             try
             {
                 var result = await logic.AddLead( dto );
-                logger.Information( GetType().Assembly.GetName().Name + " | Создана сделка в AmoCRM - {@Id}", result );
                 return Created( "", result );
             }
             catch (Exception ex)
