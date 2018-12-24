@@ -19,6 +19,9 @@ namespace WebApiFPA
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                        .ConfigureLogging((c, l) => {
+                            l.ClearProviders();
+                        })
                 .UseStartup<Startup>()
                 .Build();
     }

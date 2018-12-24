@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Logging.Debug;
+using Serilog;
+using Serilog.Extensions.Logging;
 using System.Net.Http;
 using WebApiBusinessLogic;
 
@@ -16,15 +21,34 @@ namespace WebApiFPA
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        public IConfiguration config;
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("~Application", configuration["applicationName"])
+                .Enrich.WithProperty("~Enviroment", configuration["ENVIRONMENT"])
+                .WriteTo.LiterateConsole()
+                .WriteTo.Seq("http://logs.fitness-pro.ru:5341")
+                .CreateLogger();
         }
+        
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(builder => builder
+                .SetMinimumLevel(LogLevel.Trace)
+                //.AddFilter<ConsoleLoggerProvider>("Microsoft", LogLevel.Information)
+                //.AddFilter<ConsoleLoggerProvider>("System", LogLevel.Information)
+                //.AddFilter<SerilogLoggerProvider>("Microsoft", LogLevel.Warning)
+                //.AddFilter<SerilogLoggerProvider>("System", LogLevel.Warning)
+                //.AddConsole()
+                .AddSerilog()
+                ); 
+
             services.AddMvc();
 
             services.AddCors();
@@ -45,15 +69,6 @@ namespace WebApiFPA
             services.AddScoped( mapper => { return new TypeAdapterConfig(); } );
 
             services.AddScoped<IDataManager, CrmManager>();
-
-            //services.AddScoped( amo =>
-            //{
-            //    return new DataManager(
-            //        Configuration.GetSection( "providers:0:AmoCRM:connection:account:name" ).Value,
-            //        Configuration.GetSection( "providers:0:AmoCRM:connection:account:email" ).Value,
-            //         Configuration.GetSection( "providers:0:AmoCRM:connection:account:hash" ).Value
-            //    );
-            //} );
 
             services.AddScoped( service1C =>
             {
