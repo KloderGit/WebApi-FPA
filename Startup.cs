@@ -9,11 +9,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging.Debug;
 using Serilog;
-using Serilog.Extensions.Logging;
-using System.Net.Http;
+using Serilog.Events;
+using WebApi.Infrastructure.SerilogEnrichers;
 using WebApiBusinessLogic;
 
 namespace WebApiFPA
@@ -27,11 +25,13 @@ namespace WebApiFPA
             Configuration = configuration;
 
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
+                .Enrich.With(new ThreadIdEnricher())
+                .Enrich.With(new AssemblyNameEnricher())
                 .Enrich.WithProperty("~Application", configuration["applicationName"])
                 .Enrich.WithProperty("~Enviroment", configuration["ENVIRONMENT"])
-                .WriteTo.LiterateConsole()
                 .WriteTo.Seq("http://logs.fitness-pro.ru:5341")
                 .CreateLogger();
         }
@@ -39,16 +39,6 @@ namespace WebApiFPA
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(builder => builder
-                .SetMinimumLevel(LogLevel.Trace)
-                //.AddFilter<ConsoleLoggerProvider>("Microsoft", LogLevel.Information)
-                //.AddFilter<ConsoleLoggerProvider>("System", LogLevel.Information)
-                //.AddFilter<SerilogLoggerProvider>("Microsoft", LogLevel.Warning)
-                //.AddFilter<SerilogLoggerProvider>("System", LogLevel.Warning)
-                //.AddConsole()
-                .AddSerilog()
-                ); 
-
             services.AddMvc();
 
             services.AddCors();
@@ -91,9 +81,19 @@ namespace WebApiFPA
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Connection connection)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Connection connection, ILoggerFactory loggerFactory)
         {
             connection.Auth(null);
+
+            loggerFactory
+                //.WithFilter(new FilterLoggerSettings
+                //{
+                //  { "Microsoft", LogLevel.Error },
+                //  { "System", LogLevel.Error }
+                //})
+                .AddSerilog()
+                .AddConsole();
+                
 
             app.UseCors( builder => builder.AllowAnyOrigin()
                                          .AllowAnyHeader()

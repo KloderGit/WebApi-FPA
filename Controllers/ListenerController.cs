@@ -2,6 +2,7 @@
 using Common.Logging;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Serilog;
 using System.IO;
@@ -20,14 +21,16 @@ namespace WebApiFPA.Controllers
     public class ListenerController : Controller
     {
         BusinessLogic logic;
-        ILoggerService logger;
+        ILoggerFactory loggerFactory;
+        Microsoft.Extensions.Logging.ILogger logger;
         TypeAdapterConfig mapper;
 
-        public ListenerController(ILoggerService logger, BusinessLogic logic, TypeAdapterConfig mapper)
+        public ListenerController(ILoggerFactory loggerFactory, BusinessLogic logic, TypeAdapterConfig mapper)
         {
             new RegisterMapsterConfig();
 
-            this.logger = logger;
+            this.loggerFactory = loggerFactory;
+            this.logger = loggerFactory.CreateLogger(this.ToString());
             this.logic = logic;
             this.mapper = mapper;
         }
@@ -46,7 +49,7 @@ namespace WebApiFPA.Controllers
 
             logic.GetEvent(value.Adapt<CrmEvent>());
 
-            logger.Information("Входящее событие, {@Element}", value);
+            logger.LogInformation("Входящее событие, {@Element}", value);
 
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
@@ -58,7 +61,7 @@ namespace WebApiFPA.Controllers
         {
             var ttt = new StreamReader(Request.Body).ReadToEndAsync().Result;
 
-            logger.Information("Данные от AMO, {Data}", ttt.ToString());
+            logger.LogInformation("Данные от AMO, {Data}", ttt.ToString());
 
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
@@ -70,7 +73,7 @@ namespace WebApiFPA.Controllers
 
             var ttt = new StreamReader( Request.Body ).ReadToEndAsync().Result;
 
-            logger.Information( "Данные от AMO, {Data}", ttt.ToString() );
+            logger.LogInformation( "Данные от AMO, {Data}", ttt.ToString() );
 
             return new HttpResponseMessage( HttpStatusCode.OK );
         }

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Common.Interfaces;
-using LibraryAmoCRM.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using WebApiBusinessLogic;
 
 namespace WebApi.Controllers
@@ -20,12 +17,14 @@ namespace WebApi.Controllers
     public class ModelsController : Controller
     {
         BusinessLogic logic;
-        ILoggerService logger;
+        Microsoft.Extensions.Logging.ILogger logger;
+        ILoggerFactory loggerFactory;
         IMemoryCache cache;
 
-        public ModelsController(ILoggerService logger, BusinessLogic logic, IMemoryCache memoryCache)
+        public ModelsController(ILoggerFactory loggerFactory, BusinessLogic logic, IMemoryCache memoryCache)
         {
-            this.logger = logger;
+            this.loggerFactory = loggerFactory;
+            this.logger = loggerFactory.CreateLogger(this.ToString());
             this.logic = logic;
             this.cache = memoryCache;
         }

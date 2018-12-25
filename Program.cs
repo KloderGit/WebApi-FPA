@@ -21,6 +21,7 @@ namespace WebApiFPA
             WebHost.CreateDefaultBuilder(args)
                         .ConfigureLogging((c, l) => {
                             l.ClearProviders();
+                            l.SetMinimumLevel(LogLevel.Trace);
                         })
                 .UseStartup<Startup>()
                 .Build();
