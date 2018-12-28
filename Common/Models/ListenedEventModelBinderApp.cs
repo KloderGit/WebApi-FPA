@@ -55,9 +55,11 @@ namespace WebApi.Common
                 if (!String.IsNullOrEmpty(hasOldstatus))
                 {
                     var curentValue = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "status_id").FirstValue;
+                    var pipeline = context.ValueProvider.GetValue(entity + "." + @event + "[0]" + "." + "pipeline_id").FirstValue;
+
                     if (curentValue != hasOldstatus)
                     {
-                        Events.Add(new ChangedParam { Event = @event, OldValue = hasOldstatus, CurrentValue = curentValue });
+                        Events.Add(new ChangedParam { Event = @event, OldValue = hasOldstatus, CurrentValue = curentValue, Pipeline = pipeline });
                     }
                 }
             }
