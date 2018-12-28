@@ -31,7 +31,7 @@ namespace WebApiFPA
                 .Enrich.With(new ThreadIdEnricher())
                 .Enrich.With(new AssemblyNameEnricher())
                 .Enrich.WithProperty("~Application", configuration["applicationName"])
-                .Enrich.WithProperty("~Enviroment", configuration["ENVIRONMENT"])
+                .Enrich.WithProperty("~Enviroment", configuration["ASPNETCORE_ENVIRONMENT"])
                 .WriteTo.Seq("http://logs.fitness-pro.ru:5341")
                 .CreateLogger();
         }
@@ -58,7 +58,7 @@ namespace WebApiFPA
 
             services.AddScoped( mapper => { return new TypeAdapterConfig(); } );
 
-            services.AddScoped<IDataManager, CrmManager>();
+            services.AddSingleton<IDataManager, CrmManager>();
 
             services.AddScoped( service1C =>
             {

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Controllers.SignUp.Models;
 using WebApi.Infrastructure.Binders;
@@ -21,17 +22,15 @@ namespace WebApi.Controllers.SignUp
     {
         SignUpLogic logic;
         TypeAdapterConfig mapper;
-        ILoggerService logger;
-        ILogger logger3;
+        ILogger logger;
 
-        public SignUpController(ILoggerService logger, TypeAdapterConfig mapper, IDataManager crm, ILogger<SignUpController> logger3, ILoggerFactory loggerFactory)
+        public SignUpController(TypeAdapterConfig mapper, IDataManager crm, ILoggerFactory loggerFactory)
         {
-            this.logger = logger;
-            this.logger3 = loggerFactory.CreateLogger(this.ToString());
+            this.logger = loggerFactory.CreateLogger(this.ToString());
 
             this.mapper = mapper;
                 new Map_FormToModel( mapper );
-            this.logic = new SignUpLogic(logger, mapper, crm, loggerFactory);
+            this.logic = new SignUpLogic(mapper, crm, loggerFactory);
         }
 
         [HttpPost]
@@ -45,11 +44,11 @@ namespace WebApi.Controllers.SignUp
             {
                 model = fields.Adapt<SiteFormModel>( mapper );
 
-                logger3.LogInformation("Получена модель с форм сайта {@Model}", model);
+                logger.LogInformation("Получена модель с форм сайта {@Model}", model);
             }
             catch (Exception ex)
             {
-                logger3.LogError( ex, "Ошибка маппинга модели данных формы с сайта {@Model}", model );
+                logger.LogError( ex, "Ошибка маппинга модели данных формы с сайта {@Model}", model );
             }
             
             // Check Model
@@ -61,6 +60,8 @@ namespace WebApi.Controllers.SignUp
                 {
                     ModelState.AddModelError( "errors", error.ErrorMessage );
                 }
+
+                logger.LogError("Модель не прошла валидацию - {@Errors}", validateResults.Select(e=>e.ErrorMessage));
 
                 return BadRequest( ModelState );
             }
@@ -74,7 +75,7 @@ namespace WebApi.Controllers.SignUp
             }
             catch (Exception ex)
             {
-                logger3.LogError( ex, "Ошибка маппинга модели данных формы в модель DTO {@Model}", model );
+                logger.LogError( ex, "Ошибка маппинга модели данных формы в модель DTO {@Model}", model );
             }
 
             try
