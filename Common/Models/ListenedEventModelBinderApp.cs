@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Common.Models;
+using WebApi.Infrastructure.Converters;
 
 namespace WebApi.Common
 {
@@ -18,6 +20,18 @@ namespace WebApi.Common
             {
                 throw new ArgumentNullException(nameof(bindingContext));
             }
+
+
+            var ttt = bindingContext.HttpContext.Request.Form;
+
+            var strFull = ttt.Select(s => s.Key + "=" + s.Value);
+
+            var asd = String.Join('&', strFull);
+
+
+            var result3 = new URLParamsToJsonConverter().Covert(asd);
+            var view = result3.ToString();
+
 
             var names = bindingContext.HttpContext.Request.Form.Keys.FirstOrDefault().Split("[").Select(x => x.Replace("]", "")).ToArray();
             char[] charsToTrim = { '\n', '\r', ' ' };
