@@ -47,9 +47,9 @@ namespace WebApiFPA.Controllers
         //    value)
         {
 
-            logic.GetEvent(value.Adapt<CrmEvent>());
-
             logger.LogInformation("Входящее событие, {@Element}", value);
+
+            logic.GetEvent(value.Adapt<CrmEvent>());
 
             return new HttpResponseMessage(HttpStatusCode.OK);
         }

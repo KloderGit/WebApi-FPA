@@ -37,7 +37,7 @@ namespace WebApi.Controllers.CallBack
         [Route("request")]
         public async Task<IActionResult> GetModel([FromBody] CallBackViewModel model)
         {
-            logger.LogError("Получена форма на запрос Перезвонить {@Model}", model);
+            logger.LogInformation("Получена форма на запрос Перезвонить {@Model}", model);
 
             var res = await logic.CreateRecallTask(model.Adapt<CallBackDTO>());
 

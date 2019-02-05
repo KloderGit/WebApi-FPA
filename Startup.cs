@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using System;
 using WebApi.Infrastructure.SerilogEnrichers;
 using WebApiBusinessLogic;
 
@@ -47,14 +48,14 @@ namespace WebApiFPA
 
             services.AddScoped<ILoggerService, LoggerService>();
 
-            services.AddSingleton<Connection>( con =>
-            {
-                return new Connection(
-                    Configuration.GetSection( "providers:0:AmoCRM:connection:account:name" ).Value,
-                    Configuration.GetSection( "providers:0:AmoCRM:connection:account:email" ).Value,
-                    Configuration.GetSection( "providers:0:AmoCRM:connection:account:hash" ).Value
-                );
-            } );
+            services.AddSingleton<Connection>(con =>
+           {
+               return new Connection(
+                   Configuration.GetSection("providers:0:AmoCRM:connection:account:name").Value,
+                   Configuration.GetSection("providers:0:AmoCRM:connection:account:email").Value,
+                   Configuration.GetSection("providers:0:AmoCRM:connection:account:hash").Value
+               );
+           });
 
             services.AddScoped( mapper => { return new TypeAdapterConfig(); } );
 
@@ -70,11 +71,14 @@ namespace WebApiFPA
 
             services.AddSingleton( neo =>
             {
-                return new ServiceLibraryNeoClient.Implements.DataManager(
-                    new System.Uri( Configuration.GetSection( "providers:2:Neo:connection:account:uri" ).Value ),
-                        Configuration.GetSection( "providers:2:Neo:connection:account:user" ).Value,
-                        Configuration.GetSection( "providers:2:Neo:connection:account:pass" ).Value
-                    );
+                return new Lazy<ServiceLibraryNeoClient.Implements.DataManager>(
+                    () => new ServiceLibraryNeoClient.Implements.DataManager(
+                    new System.Uri(Configuration.GetSection("providers:2:Neo:connection:account:uri").Value),
+                        Configuration.GetSection("providers:2:Neo:connection:account:user").Value,
+                        Configuration.GetSection("providers:2:Neo:connection:account:pass").Value
+                    )
+                    , true
+                );
             } );
 
             services.AddScoped<BusinessLogic>();
