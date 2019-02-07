@@ -10,12 +10,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Controllers.SignUp.Models;
 using WebApi.Infrastructure.Binders;
+using WebApi.Infrastructure.Filters;
 using WebApi.Infrastructure.LocalMaps;
 using WebApiBusinessLogic.Logics.SignUp;
 using WebApiBusinessLogic.Logics.SignUp.Model;
 
 namespace WebApi.Controllers.SignUp
 {
+    [TypeFilter(typeof(RequestScopeFilter))]
     [Produces("application/json")]
     [Route("SignUp")]
     public class SignUpController : Controller

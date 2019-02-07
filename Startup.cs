@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using System;
+using WebApi.Common.Models;
 using WebApi.Infrastructure.SerilogEnrichers;
 using WebApiBusinessLogic;
 
@@ -31,10 +32,11 @@ namespace WebApiFPA
                 .Enrich.FromLogContext()
                 .Enrich.With(new ThreadIdEnricher())
                 .Enrich.With(new AssemblyNameEnricher())
+                //.Enrich.With(new RequestScopeEnricher(requestScope))
                 .Enrich.WithProperty("~Application", configuration["applicationName"])
                 .Enrich.WithProperty("~Enviroment", configuration["ASPNETCORE_ENVIRONMENT"])
                 .WriteTo.Seq("http://logs.fitness-pro.ru:5341")
-                .CreateLogger();
+            .CreateLogger();
         }
         
 
@@ -46,7 +48,9 @@ namespace WebApiFPA
 
             services.AddMemoryCache();
 
-            services.AddScoped<ILoggerService, LoggerService>();
+            services.AddScoped<RequestScope>();
+
+            //services.AddScoped<ILoggerService, LoggerService>();
 
             services.AddSingleton<Connection>(con =>
            {
@@ -87,14 +91,9 @@ namespace WebApiFPA
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, Connection connection, ILoggerFactory loggerFactory)
         {
-            connection.Auth(null);
+            //connection.Auth(null);
 
             loggerFactory
-                //.WithFilter(new FilterLoggerSettings
-                //{
-                //  { "Microsoft", LogLevel.Error },
-                //  { "System", LogLevel.Error }
-                //})
                 .AddSerilog()
                 .AddConsole();
                 
