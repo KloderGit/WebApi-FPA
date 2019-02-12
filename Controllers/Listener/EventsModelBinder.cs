@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApi.Controllers.Listener.Models;
 using WebApi.Infrastructure.Converters;
-using WebApiBusinessLogic.Logics.Listener.DTO;
 
 namespace WebApi.Controllers.Listener
 {
@@ -14,7 +13,7 @@ namespace WebApi.Controllers.Listener
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
-            var ResultObject = new ListeningEvent();
+            var ResultObject = new List<EventViewModel>();
 
             if (bindingContext == null)
             {
@@ -30,11 +29,9 @@ namespace WebApi.Controllers.Listener
             IList<string> entitiesNames = json.Properties().Select(p => p.Name).ToList();
             entitiesNames.Remove("account");
 
-            var Ret = new List<CrmEventDTO>();
-
             Dictionary<string, Type> TypeForEvent = new Dictionary<string, Type> {
-                { "contacts", typeof(EventContactModel) },
-                { "leads", typeof(EventLeadModel) }
+                { "contacts", typeof(ContactViewModel) },
+                { "leads", typeof(LeadViewModel) }
             };
 
             foreach (var entityName in entitiesNames)
@@ -44,18 +41,19 @@ namespace WebApi.Controllers.Listener
 
                 foreach (var eventName in eventsNames)
                 {
-                    var item = new CrmEventDTO();
+                    var item = new EventViewModel();
+                    item.Entity = entityName;
                     item.Event = eventName;
-                    item.Entities = new List<CrmEventEntityBase>();
+                    item.Entities = new List<EntityBase>();
 
                     foreach (var i in json[entityName][eventName])
                     {
                         var obj = ((JObject)i).ToObject(TypeForEvent[entityName]);
 
-                        item.Entities.Add(obj as CrmEventEntityBase);
+                        item.Entities.Add(obj as EntityBase);
                     }
 
-                    ResultObject.CrmEvents.Add(item);
+                    ResultObject.Add(item);
                 }
 
             }
