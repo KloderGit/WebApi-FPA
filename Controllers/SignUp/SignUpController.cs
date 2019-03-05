@@ -17,7 +17,7 @@ using WebApiBusinessLogic.Logics.SignUp.Model;
 
 namespace WebApi.Controllers.SignUp
 {
-    [TypeFilter(typeof(RequestScopeFilter))]
+    //[TypeFilter(typeof(RequestScopeFilter))]
     [Produces("application/json")]
     [Route("SignUp")]
     public class SignUpController : Controller

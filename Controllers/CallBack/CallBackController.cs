@@ -16,7 +16,7 @@ using WebApiBusinessLogic.Logics.CallBack.Models;
 
 namespace WebApi.Controllers.CallBack
 {
-    [TypeFilter(typeof(RequestScopeFilter))]
+    //[TypeFilter(typeof(RequestScopeFilter))]
     [Produces("application/json")]
     [Route("CallBack")]
     public class CallBackController : Controller

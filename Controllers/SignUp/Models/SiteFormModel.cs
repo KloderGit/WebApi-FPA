@@ -21,10 +21,10 @@ namespace WebApi.Controllers.SignUp.Models
             //if (string.IsNullOrWhiteSpace( this.Contact.Name ))
             //    errors.Add( new ValidationResult( "Не указано ФИО" ) );
 
-            var ph = string.IsNullOrWhiteSpace(this.Contact.Phone);
-            var em = string.IsNullOrWhiteSpace(this.Contact.Email);
+            var ph = !string.IsNullOrWhiteSpace(this.Contact.Phone);
+            var em = !string.IsNullOrWhiteSpace(this.Contact.Email);
 
-            if (!ph || !em) return errors;
+            if (ph || em) return errors;
 
             if (string.IsNullOrWhiteSpace( this.Contact.Phone ))
                 errors.Add( new ValidationResult( "Не указан телефон пользователя" ) );

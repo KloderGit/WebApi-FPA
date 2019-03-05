@@ -13,6 +13,7 @@ using Serilog;
 using Serilog.Events;
 using System;
 using WebApi.Common.Models;
+using WebApi.Infrastructure.Filters;
 using WebApi.Infrastructure.SerilogEnrichers;
 using WebApiBusinessLogic;
 
@@ -25,25 +26,11 @@ namespace WebApiFPA
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                .Enrich.FromLogContext()
-                .Enrich.With(new ThreadIdEnricher())
-                .Enrich.With(new AssemblyNameEnricher())
-                //.Enrich.With(new RequestScopeEnricher(requestScope))
-                .Enrich.WithProperty("~Application", configuration["applicationName"])
-                .Enrich.WithProperty("~Enviroment", configuration["ASPNETCORE_ENVIRONMENT"])
-                .WriteTo.Seq("http://logs.fitness-pro.ru:5341")
-            .CreateLogger();
         }
         
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-
             services.AddCors();
 
             services.AddMemoryCache();
@@ -63,7 +50,7 @@ namespace WebApiFPA
 
             services.AddScoped( mapper => { return new TypeAdapterConfig(); } );
 
-            services.AddSingleton<IDataManager, CrmManager>();
+            services.AddScoped<IDataManager, CrmManager>();
 
             services.AddScoped( service1C =>
             {
@@ -86,12 +73,29 @@ namespace WebApiFPA
             } );
 
             services.AddScoped<BusinessLogic>();
+
+            services.AddMvc();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, Connection connection, ILoggerFactory loggerFactory)
         {
             //connection.Auth(null);
+
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                //.Enrich.FromLogContext()
+                //.Enrich.With(new ThreadIdEnricher())
+                //.Enrich.With(new AssemblyNameEnricher())
+                //.Enrich.With(new RequestScopeEnricher(requestScope))
+                //.Enrich.WithProperty("~Application", configuration["applicationName"])
+                //.Enrich.WithProperty("~Enviroment", configuration["ASPNETCORE_ENVIRONMENT"])
+                .WriteTo.Async(a => a.Seq("http://logs.fitness-pro.ru:5341"))
+            .CreateLogger();
+
 
             loggerFactory
                 .AddSerilog()

@@ -17,7 +17,8 @@ using WebApiBusinessLogic.Models.Crm;
 
 namespace WebApiFPA.Controllers
 {
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
+    [Route("api/Listener2")]
     public class ListenerController : Controller
     {
         BusinessLogic logic;

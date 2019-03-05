@@ -19,7 +19,6 @@ namespace WebApi.Controllers.Listener
             {
                 throw new ArgumentNullException(nameof(bindingContext));
             }
-
             var clueValue = bindingContext.HttpContext.Request.Form.Select(s => s.Key + "=" + s.Value);
             var urlParamsString = String.Join('&', clueValue);
 
@@ -28,6 +27,7 @@ namespace WebApi.Controllers.Listener
 
             IList<string> entitiesNames = json.Properties().Select(p => p.Name).ToList();
             entitiesNames.Remove("account");
+            entitiesNames.Remove("task");   // Задачи не обрабатываюся и нет моделей
 
             Dictionary<string, Type> TypeForEvent = new Dictionary<string, Type> {
                 { "contacts", typeof(ContactViewModel) },
